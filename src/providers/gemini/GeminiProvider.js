@@ -73,8 +73,8 @@ export class GeminiProvider extends Provider {
 			errors.push(`Unsupported model: ${config.model}. Supported: ${supportedModels.join(', ')}`);
 		}
 
-		if (config.temperature !== undefined && (config.temperature < 0 || config.temperature > 1)) {
-			errors.push('Temperature must be between 0.0 and 1.0');
+		if (config.temperature !== undefined && (config.temperature < 0 || config.temperature > 2)) {
++			errors.push('Temperature must be between 0.0 and 2.0');
 		}
 
 		return {
