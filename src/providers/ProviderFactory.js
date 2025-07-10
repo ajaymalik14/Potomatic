@@ -84,7 +84,7 @@ export class ProviderFactory {
 				displayName: 'Google Gemini',
 				description: 'Google Gemini models',
 				status: 'implemented',
-				models: ['gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.5-flash-lite'],
+				models: ['gemini-2.5-pro', 'gemini-2.5-flash'],
 				configExample: {
 					provider: 'gemini',
 					apiKey: 'your-gemini-api-key',

@@ -239,7 +239,7 @@ export class GeminiProvider extends Provider {
 			return Object.keys(this.providerPricing.models).sort();
 		}
 
-		return ['gemini-1.5-flash-latest', 'gemini-1.5-pro-latest', 'gemini-pro'];
+		return ['gemini-2.5-pro', 'gemini-2.5-flash'];
 	}
 
 	/**
@@ -298,9 +298,9 @@ export class GeminiProvider extends Provider {
 	_getFallbackPricing() {
 		return {
 			models: {
-				'gemini-1.5-flash-latest': { prompt: 0.0005, completion: 0.0015 },
-				'gemini-1.5-pro-latest': { prompt: 0.0025, completion: 0.0075 },
-				'gemini-pro': { prompt: 0.0005, completion: 0.0015 },
+				'gemini-2.5-flash': { prompt: 0.000175, completion: 0.000525 },
+                 'gemini-2.5-pro':   { prompt: 0.0005,   completion: 0.0015   },
+
 			},
 			fallback: { prompt: 0.0005, completion: 0.0015 },
 		};
