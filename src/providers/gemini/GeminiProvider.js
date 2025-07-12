@@ -212,19 +212,24 @@ export class GeminiProvider extends Provider {
 	 * @return {number} Token count.
 	 */
 	async getTokenCount(text, model) {
-		if (!text || typeof text !== 'string') {
-			return 0;
-		}
-
-		try {
-			const response = await this.client.countTokens(text);
-			return response.totalTokens;
-		} catch (error) {
-			this.logger.warn(`Failed to get exact token count: ${error.message}`);
-
+ 		if (!text || typeof text !== 'string') {
+ 			return 0;
+ 		}
+ 
+		if (!this.client) {
+			this.logger.warn('Client not initialized, using fallback token count');
 			return Math.ceil(text.length / 4);
 		}
-	}
+ 
+ 		try {
+ 			const response = await this.client.countTokens(text);
+ 			return response.totalTokens;
+ 		} catch (error) {
+ 			this.logger.warn(`Failed to get exact token count: ${error.message}`);
+ 
+ 			return Math.ceil(text.length / 4);
+ 		}
+ 	}
 
 	/**
 	 * Gets supported Gemini models.
@@ -326,8 +331,7 @@ export class GeminiProvider extends Provider {
 		const inputTokens = await this.getTokenCount(fullPrompt, model);
 
 		// Estimate output tokens.
-		const userMessageTokens = await this.getTokenCount(messages[1].content, model);
-		const estimatedOutputTokens = this.estimateOutputTokens(userMessageTokens);
+		const estimatedOutputTokens = this.estimateOutputTokens(inputTokens);
 
 		// Calculate estimated costs.
 		const pricing = this.getModelPricing(model);
@@ -453,7 +457,7 @@ export class GeminiProvider extends Provider {
 				this.logger.debug('=== END PARSED TRANSLATIONS ===');
 
 				const usage = {
-					prompt_tokens: await this.getTokenCount(messages.map(m => m.content).join('\n'), model),
+					prompt_tokens: await this.getTokenCount(messages.map(m => m.content || '').join('\n'), model),
 					completion_tokens: await this.getTokenCount(responseText, model),
 				};
 				usage.total_tokens = usage.prompt_tokens + usage.completion_tokens;
