@@ -422,15 +422,21 @@ export class GeminiProvider extends Provider {
 				// Handle test mode failure simulation.
 				this._handleTestModeFailures(attempt, maxRetries);
 
+				const history = messages.slice(0, -1).map((message) => ({
+					role: message.role,
+					parts: [{ text: message.content || '' }],
+				}));
+
 				const chat = this.client.startChat({
-					history: messages.slice(0, -1),
+					history,
 					generationConfig: {
 						temperature: this.config.temperature || 0.1,
 						maxOutputTokens: this._calculateMaxTokens(model, batch.length),
-					}
+					},
 				});
 
-				const result = await chat.sendMessage(messages[messages.length - 1].content);
+				const lastMessage = messages[messages.length - 1];
+				const result = await chat.sendMessage(lastMessage.content || '');
 				const response = await result.response;
 				const responseText = response.text();
 
