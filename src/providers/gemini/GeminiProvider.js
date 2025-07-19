@@ -74,7 +74,7 @@ export class GeminiProvider extends Provider {
 		}
 
 		if (config.temperature !== undefined && (config.temperature < 0 || config.temperature > 2)) {
-+			errors.push('Temperature must be between 0.0 and 2.0');
+			errors.push('Temperature must be between 0.0 and 2.0');
 		}
 
 		return {
