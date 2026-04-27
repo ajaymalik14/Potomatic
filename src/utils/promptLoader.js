@@ -23,16 +23,22 @@ import { getPluralForms, extractPluralCount } from './poFileUtils.js';
  */
 function loadPromptTemplate(promptFilePath) {
 	try {
+		if (!fs.existsSync(promptFilePath)) {
+			// Return empty string if prompt file doesn't exist (e.g., Google Translate provider)
+			return '';
+		}
+
 		const content = fs.readFileSync(promptFilePath, 'utf-8');
 		const prompt = content.trim();
 
 		if (!prompt) {
-			throw new Error('Prompt file is empty');
+			return '';
 		}
 
 		return prompt;
 	} catch (error) {
-		throw new Error(`Failed to load prompt from ${promptFilePath}: ${error.message}`);
+		// Return empty string on error instead of throwing
+		return '';
 	}
 }
 
@@ -57,7 +63,7 @@ export function buildSystemPrompt(targetLang, sourceLang = 'English', promptFile
 	const template = loadPromptTemplate(promptFilePath);
 	const targetLanguageName = getApiTargetLanguage(targetLang);
 	const sourceLanguageName = getApiTargetLanguage(sourceLang);
-	const pluralFormsString = getPluralForms(targetLang, { debug: () => {}, warn: () => {} });
+	const pluralFormsString = getPluralForms(targetLang, { debug: () => { }, warn: () => { } });
 	const pluralCount = extractPluralCount(pluralFormsString);
 
 	return template

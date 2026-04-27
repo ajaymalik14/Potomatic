@@ -1,5 +1,6 @@
 import { OpenAIProvider } from './openai/OpenAIProvider.js';
 import { GeminiProvider } from './gemini/GeminiProvider.js';
+import { GoogleTranslateProvider } from './google-translate/GoogleTranslateProvider.js';
 
 /**
  * Creates and configures AI translation providers based on configuration.
@@ -29,6 +30,8 @@ export class ProviderFactory {
 				return new OpenAIProvider(config, logger);
 			case 'gemini':
 				return new GeminiProvider(config, logger);
+			case 'google-translate':
+				return new GoogleTranslateProvider(config, logger);
 			default:
 				throw new Error(`Unsupported provider: ${providerName}. ` + `Supported providers: ${ProviderFactory.getSupportedProviders().join(', ')}`);
 		}
@@ -42,7 +45,7 @@ export class ProviderFactory {
 	 * @return {Array<string>} Array of supported provider names.
 	 */
 	static getSupportedProviders() {
-		return ['openai', 'gemini'];
+		return ['openai', 'gemini', 'google-translate'];
 	}
 
 	/**
@@ -89,6 +92,17 @@ export class ProviderFactory {
 					provider: 'gemini',
 					apiKey: 'your-gemini-api-key',
 					model: 'gemini-2.5-flash',
+				},
+			},
+			{
+				name: 'google-translate',
+				displayName: 'Google Translate (Free)',
+				description: 'Free Google Translate API - no API key required',
+				status: 'implemented',
+				models: ['default'],
+				configExample: {
+					provider: 'google-translate',
+					sourceLanguage: 'en',
 				},
 			},
 		];

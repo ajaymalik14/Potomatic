@@ -7,6 +7,18 @@
     "gemini-2.5-flash": {
       "prompt": 0.000175,
       "completion": 0.000525
+    },
+    "gemini-3.1-pro-preview": {
+      "prompt": 0.00125,
+      "completion": 0.005
+    },
+    "gemini-flash-latest": {
+      "prompt": 0.000175,
+      "completion": 0.000525
+    },
+    "gemini-3.1-flash-lite-preview": {
+      "prompt": 0.0000375,
+      "completion": 0.00015
     }
   },
   "fallback": {

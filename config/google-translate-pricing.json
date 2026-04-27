@@ -1,0 +1,12 @@
+{
+    "models": {
+        "default": {
+            "prompt": 0,
+            "completion": 0
+        }
+    },
+    "fallback": {
+        "prompt": 0,
+        "completion": 0
+    }
+}

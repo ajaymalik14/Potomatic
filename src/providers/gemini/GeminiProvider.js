@@ -212,24 +212,24 @@ export class GeminiProvider extends Provider {
 	 * @return {number} Token count.
 	 */
 	async getTokenCount(text, model) {
- 		if (!text || typeof text !== 'string') {
- 			return 0;
- 		}
- 
+		if (!text || typeof text !== 'string') {
+			return 0;
+		}
+
 		if (!this.client) {
 			this.logger.warn('Client not initialized, using fallback token count');
 			return Math.ceil(text.length / 4);
 		}
- 
- 		try {
- 			const response = await this.client.countTokens(text);
- 			return response.totalTokens;
- 		} catch (error) {
- 			this.logger.warn(`Failed to get exact token count: ${error.message}`);
- 
- 			return Math.ceil(text.length / 4);
- 		}
- 	}
+
+		try {
+			const response = await this.client.countTokens(text);
+			return response.totalTokens;
+		} catch (error) {
+			this.logger.warn(`Failed to get exact token count: ${error.message}`);
+
+			return Math.ceil(text.length / 4);
+		}
+	}
 
 	/**
 	 * Gets supported Gemini models.
@@ -244,7 +244,7 @@ export class GeminiProvider extends Provider {
 			return Object.keys(this.providerPricing.models).sort();
 		}
 
-		return ['gemini-2.5-pro', 'gemini-2.5-flash'];
+		return ['gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-3.1-pro-preview', 'gemini-flash-latest', 'gemini-3.1-flash-lite-preview'];
 	}
 
 	/**
@@ -304,8 +304,10 @@ export class GeminiProvider extends Provider {
 		return {
 			models: {
 				'gemini-2.5-flash': { prompt: 0.000175, completion: 0.000525 },
-                 'gemini-2.5-pro':   { prompt: 0.0005,   completion: 0.0015   },
-
+				'gemini-2.5-pro': { prompt: 0.0005, completion: 0.0015 },
+				'gemini-3.1-pro-preview': { prompt: 0.00125, completion: 0.005 },
+				'gemini-flash-latest': { prompt: 0.000175, completion: 0.000525 },
+				'gemini-3.1-flash-lite-preview': { prompt: 0.0000375, completion: 0.00015 },
 			},
 			fallback: { prompt: 0.0005, completion: 0.0015 },
 		};

@@ -6,9 +6,11 @@
 
 <br />
 
-**Potomatic** is a command-line tool for translating `.pot` (Portable Object Template) files into multiple languages using AI (currently OpenAI). We built it to streamline large-scale localization of WordPress products, a process we detail in [this behind‑the‑scenes article](https://www.gravitykit.com/translating-wordpress-plugins-using-chatgpt/).
+**Potomatic** is a command-line tool for translating `.pot` (Portable Object Template) files into multiple languages using AI. We built it to streamline large-scale localization of WordPress products, a process we detail in [this behind‑the‑scenes article](https://www.gravitykit.com/translating-wordpress-plugins-using-chatgpt/).
 
 While [`gpt-po`](https://github.com/ryanhex53/gpt-po) helped us get started, we needed smarter retry logic, cost controls, and better visibility into large jobs, among other things. **Potomatic** delivers those improvements and more, as well adds fine‑grained prompt tuning through a built‑in [A/B testing utility](#-ab-testing-for-prompt-optimization).
+
+Supports multiple AI providers: **OpenAI**, **Google Gemini**, and **Google Translate API**.
 
 ## 📢 Disclaimer
 
@@ -40,7 +42,7 @@ For improved results, consider refining your prompt, using a higher-tier model, 
 
 ## 🚀 Key Features
 
-* **🤖 AI‑powered translations** – Translate into any language supported by OpenAI models.
+* **🤖 AI‑powered translations** – Translate into any language supported by OpenAI, Google Gemini, or Google Translate API.
 * **📦 Smart batch handling** – Tune batch size, concurrency and retries for the right balance of cost and speed.
 * **💰 Cost‑conscious execution** – Accurately estimate costs and tokens, and control the maximum cost of a job.
 * **🔄 Incremental & resumable workflows** – Resume interrupted jobs, merge with existing `.po` files, or force a re‑translation.
@@ -282,6 +284,73 @@ Using this example, "Block Editor" and other terms will not be translated to tar
 | `--help`    | `-h`  | Display help for command  | -       |
 
 **Note**: All options can also be set via environment variables. Environment variable names typically match the CLI option names in UPPER_CASE format (e.g., `--max-cost` becomes `MAX_COST`, `--retry-delay` becomes `RETRY_DELAY`).
+
+---
+
+## 🤖 AI Providers
+
+Potomatic supports multiple AI providers for translation:
+
+### Google Gemini
+
+Uses Google's Gemini models for translation. Set the provider to `gemini` and configure your API key.
+
+**Available Models:**
+
+| Model | Prompt Cost | Completion Cost | Best For |
+|-------|-------------|-----------------|----------|
+| `gemini-3.1-pro-preview` | $0.00125/1K tokens | $0.005/1K tokens | Complex translations, highest quality |
+| `gemini-2.5-pro` | $0.0005/1K tokens | $0.0015/1K tokens | High-quality general use |
+| `gemini-2.5-flash` | $0.000175/1K tokens | $0.000525/1K tokens | Fast, cost-effective translations |
+| `gemini-flash-latest` | $0.000175/1K tokens | $0.000525/1K tokens | Latest optimized flash model |
+| `gemini-3.1-flash-lite-preview` | $0.0000375/1K tokens | $0.00015/1K tokens | Ultra-budget translations |
+
+**Usage:**
+```bash
+# Using Gemini 2.5 Flash
+./potomatic -l fr_FR -p translations.pot --provider gemini --model gemini-2.5-flash -k $GOOGLE_API_KEY
+
+# Using the latest flash model
+./potomatic -l fr_FR -p translations.pot --provider gemini --model gemini-flash-latest -k $GOOGLE_API_KEY
+
+# Using budget-friendly flash-lite
+./potomatic -l fr_FR -p translations.pot --provider gemini --model gemini-3.1-flash-lite-preview -k $GOOGLE_API_KEY
+```
+
+### Google Translate API
+
+Uses Google Cloud Translate API for fast, cost-effective translations. Ideal for straightforward text without complex nuances.
+
+**Pricing:** Google Translate API charges based on character count:
+- $20 per 1M characters (standard tier)
+- Volume discounts available for higher usage
+
+**Usage:**
+```bash
+./potomatic -l fr_FR -p translations.pot --provider google-translate -k $GOOGLE_CLOUD_API_KEY
+```
+
+### OpenAI
+
+Uses OpenAI's GPT models for translation. This was the original provider and offers the widest model selection.
+
+**Available Models:**
+
+| Model | Prompt Cost | Completion Cost | Best For |
+|-------|-------------|-----------------|----------|
+| `gpt-4o-mini` | $0.00015/1K tokens | $0.0006/1K tokens | Fast, budget-friendly |
+| `gpt-4o` | $0.0025/1K tokens | $0.01/1K tokens | High-quality |
+| `gpt-4o-mini-2024-07-18` | $0.00015/1K tokens | $0.0006/1K tokens | Specific dated version |
+
+**Usage:**
+```bash
+./potomatic -l fr_FR -p translations.pot --provider openai --model gpt-4o-mini -k $OPENAI_API_KEY
+```
+
+**Environment Variables:**
+- `GOOGLE_API_KEY` - For Gemini provider
+- `GOOGLE_CLOUD_API_KEY` - For Google Translate provider
+- `API_KEY` - Falls back to OpenAI
 
 ---
 

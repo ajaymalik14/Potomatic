@@ -216,7 +216,7 @@ export function parseCliArguments() {
 		.option('--locale-format <format>', 'Format to use for locale codes in file names: `wp_locale` (ru_RU), `iso_639_1` (ru), `iso_639_2` (rus), or `target_lang` (default)', DEFAULTS.LOCALE_FORMAT)
 
 		// === Translation Options ==.=
-		.option('--provider <provider>', 'AI provider to use (e.g., "openai", "gemini")', DEFAULTS.PROVIDER)
+		.option('--provider <provider>', 'AI provider to use (e.g., "openai", "gemini", "google-translate")', DEFAULTS.PROVIDER)
 		.option('-k, --api-key <key>', 'Provider API key (overrides API_KEY env var)')
 		.option('-m, --model <model>', 'AI model name (e.g., "gpt-4o-mini")', DEFAULTS.MODEL)
 		.option('--temperature <number>', 'Creativity level (0.0-2.0); lower = more deterministic, higher = more creative', (val) => Math.max(0, Math.min(2, parseFloat(val))), DEFAULTS.TEMPERATURE)
@@ -303,7 +303,15 @@ export function validateConfiguration(options) {
 	const errors = [];
 
 	if (!options.dryRun && !options.apiKey && !process.env.API_KEY) {
-		errors.push('🔑 API key required (set API_KEY env var, use --api-key, or try --dry-run)');
+		// Google Translate doesn't require an API key
+		if (options.provider !== 'google-translate') {
+			errors.push('🔑 API key required (set API_KEY env var, use --api-key, or try --dry-run)');
+		}
+	}
+
+	// Google Translate requires source language
+	if (options.provider === 'google-translate' && !options.sourceLanguage && !process.env.SOURCE_LANGUAGE) {
+		errors.push('🌐 Source language required for Google Translate (use -s or --source-language)');
 	}
 
 	if (!options.targetLanguages || options.targetLanguages.length === 0) {
